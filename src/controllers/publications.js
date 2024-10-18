@@ -5,10 +5,10 @@ const getAllPublications = (req, res) => {
 }
 
 const getUserPublications = (req, res) => {
-    const {idUser} = req.params;
+    const {id_user} = req.params;
     const userPublications = 
         publications.filter((publication) => {
-            return publication.idUser == idUser;
+            return publication.id_user == idser;
         });
     if(userPublications.length == 0){
         return res.json({
@@ -20,9 +20,9 @@ const getUserPublications = (req, res) => {
 }
 
 const postNewPublication = (req, res) => {
-    const { idUser, img, nome, description, tags } = req.body;
-    if(!idUser){
-        return res.status(400).json({message:"O idUser é obrigatório."})
+    const { id_user, img, nome, description, tags } = req.body;
+    if(!id_user){
+        return res.status(400).json({message:"O id_user é obrigatório."})
     };
     if(!img){
         return res.status(400).json({message: "A imagem é obrigatória."})
@@ -44,12 +44,12 @@ const postNewPublication = (req, res) => {
 }
 
 const patchPublication = (req,res) => {
-    const { id, idUser, img, nome, description, tags } = req.body;
-    if(!id){
-        return res.status(400).json({message: "O id é obrigatório."})
+    const { id_publi, id_user, img, nome, description, tags } = req.body;
+    if(!id_publi){
+        return res.status(400).json({message: "O id_publi é obrigatório."})
     }
-    if(!idUser){
-        return res.status(400).json({message:"O idUser é obrigatório."})
+    if(!id_user){
+        return res.status(400).json({message:"O id_user é obrigatório."})
     };
     if(!img){
         return res.status(400).json({message: "A imagem é obrigatória."})

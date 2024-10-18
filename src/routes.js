@@ -1,4 +1,5 @@
 const express = require("express");
+
 const routes = express();
 const { getUsers, getUserByEmail, postNewUser } = require("./controllers/users");
 const {getAllPublications,getUserPublications, postNewPublication, patchPublication} = require("./controllers/publications")

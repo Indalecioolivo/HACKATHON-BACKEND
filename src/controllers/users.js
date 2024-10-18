@@ -1,17 +1,34 @@
 const {db} = require("../db/db")
+const pool = require("../conection")
 
-const getUsers = (req, res) =>{    
-    return res.json(db);
-};
-const getUserByEmail = (req, res) => {
-    const {email} = req.params;
-    const userSearched = db.find((user) => {
-        return user.email == email;
-    });
+const getUsers = async (req, res) => {
+
     
-    return res.json(userSearched);
+    try {
+
+        const result = await pool.query('select * from users');
+        return res.json(result.rows);
+
+    } catch (error) {
+        console.log(error.message);
+        
+    }
+
+
+
 };
-const postNewUser = (req, res) => {
+const getUserByEmail = async (req, res) => {
+    const {email} = req.params;
+    try {
+        const userSearched = await pool.query(`select * from users where email = '${email}'`)
+        return res.json(userSearched.rows);
+    } catch (error) {
+        console.log(error.message);
+        
+    }
+
+};
+const postNewUser = async (req, res) => {
     const {name, last_name, email, senha} = req.body;
     if(!name){
         return res.status(400).json({message: "O name é obrigatório."})
@@ -26,10 +43,19 @@ const postNewUser = (req, res) => {
         return res.send(400).json({message: "A senha é obrigatória."})
     }
 
-    const newUser = {name, last_name, email, senha};
-    db.push(newUser);
+    try {
+        const result = await pool.query(`
+            insert into users
+            (name, last_name, email, senha)
+            values
+            ('${name}', '${last_name}', '${email}', '${senha}')
+            `)
+        return res.json(result.rows)
 
-    return res.status(201).json({message: "Usuário cadastrado com sucesso."});
+    } catch (error) {
+        return res.json(error.message);
+        
+    }
 }
 
 

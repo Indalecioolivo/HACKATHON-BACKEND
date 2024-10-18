@@ -1,7 +1,14 @@
 const {publications} = require("../db/db");
+const pool = require("../conection")
 
-const getAllPublications = (req, res) => {
-    res.send(publications);
+const getAllPublications = async (req, res) => {
+    try {
+        const result = await pool.query('select * from publications')
+        res.json(result.rows)
+    } catch (error) {
+        res.json(error.message)
+        
+    }
 }
 
 const getUserPublications = (req, res) => {
@@ -19,7 +26,7 @@ const getUserPublications = (req, res) => {
     return res.json(userPublications);
 }
 
-const postNewPublication = (req, res) => {
+const postNewPublication = async (req, res) => {
     const { id_user, img, nome, description, tags } = req.body;
     if(!id_user){
         return res.status(400).json({message:"O id_user é obrigatório."})
@@ -37,7 +44,16 @@ const postNewPublication = (req, res) => {
         return res.status(400).json({message: "É obrigatório ao menos 1 tag."})
     }
     
-    const newPublication = {...req.body}
+    try {
+        const result = await pool.query(`
+            insert into publications
+            (id_user, img, project_name, description, tags)
+            values
+            (${id_user}, '${img}', '${nome}', '${description}', '${tags}')
+            `)
+    } catch (error) {
+        return res.json(error.message)
+    }
     
 
     return res.status(201).json({message: "Publicação criada com sucesso."});
